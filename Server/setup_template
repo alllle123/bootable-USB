@@ -1,0 +1,27 @@
+#!/bin/bash
+
+ssh root@$2 << EOF
+    userdel onlinegroup
+    adduser onlinegroup_admin
+    rm /home/onlinegroup -rf
+    mkdir /home/onlinegroup_admin/.ssh
+    chown onlinegroup_admin:onlinegroup_admin /home/onlinegroup_admin
+EOF
+/home/scripts/techkeys | ssh onlinegroup_admin@$2 "cat > .ssh/.ssh/authorized_keys"
+scp ./$1 onlinegroup_admin@$2:
+scp sensible.vim onlinegroup_admin@$2:
+scp .vimrc onlinegroup_admin@$2:
+scp iptables/enable.sh onlinegroup_admin@$2: 
+ssh onlinegroup_admin@$2 << EOF
+        nohup ./$1
+        mkdir .vim
+        mv sensible.vim .vim/
+EOF
+# /home/scripts/techkeys | ssh onlinegroup_admin@$2 "cat > .ssh/.ssh/authorized_keys"
+# EOF
+# read -p "Clearing password file"
+# > passwords
+# </dev/urandom tr -dc '12345!@#$%qwertQWERTasdfgASDFGzxcvbZXCVB' | head -c18 >> passwords
+# echo "" >> passwords
+# </dev/urandom tr -dc '12345!@#$%qwertQWERTasdfgASDFGzxcvbZXCVB' | head -c18 >> passwords
+# echo "" >> passwords

@@ -1,0 +1,22 @@
+#!/bin/bash
+
+scp $1 Pappa:delivery/
+ssh Pappa << EOF
+    cd delivery
+    scp ./$1 root@$2:
+    # scp sensible.vim root@$2:
+    # scp .vimrc root@$2:
+    # scp iptables/enable.sh root@$2: 
+    # ssh root@$2 << EOF2
+        # nohup ./$1
+        # mkdir .vim
+        # mv sensible.vim .vim/
+# EOF2
+# /home/scripts/techkeys | ssh onlinegroup_admin@$2 "cat > .ssh/.ssh/authorized_keys"
+EOF
+# read -p "Clearing password file"
+# > passwords
+# </dev/urandom tr -dc '12345!@#$%qwertQWERTasdfgASDFGzxcvbZXCVB' | head -c18 >> passwords
+# echo "" >> passwords
+# </dev/urandom tr -dc '12345!@#$%qwertQWERTasdfgASDFGzxcvbZXCVB' | head -c18 >> passwords
+# echo "" >> passwords
