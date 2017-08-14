@@ -21,7 +21,7 @@ echo
 echo 8e
 echo w
 ) | fdisk /dev/sda
-pvcreate /dev/sda2
-vgextend volgrp /dev/sda2
-lvextend /dev/volgrp/root /dev/sda2
+reboot
+pvresize /dev/sda2
+lvextend -l +100%FREE /dev/volgrp/root
 resize2fs /dev/volgrp/root
