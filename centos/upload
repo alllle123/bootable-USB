@@ -1,0 +1,37 @@
+#!/usr/bin/env python
+import re
+import os
+from sys import argv
+import WordPress
+import shutil
+
+customer_path = os.getcwd()
+sql = ""
+path = ""
+if len(argv) >= 3 and re.match("^[0-9]{7}$", argv[1]):
+    customer_ID = argv[1]
+    try:
+        customer_path = "/storage/content/{}/{}".format(customer_ID[5:], customer_ID)
+        os.chdir(customer_path)
+        print "found customer in {}".format(customer_path)
+    except:
+        print "no customer with customer ID", customer_ID
+        exit()
+if len(argv) >= 3:
+    try:
+        os.chdir(argv[2])
+        os.chdir("public_html")
+        open("wp-config.php")
+        path = os.getcwd()
+        os.chdir(customer_path)
+    except:
+        print "can't find WordPress folders"
+        exit()
+else:
+    exit()
+
+sql = argv[3]
+con_string = WordPress.get_connection_string("{}/wp-config.php".format(path))
+shutil.copyfile(sql, "{name}.sql".format(**con_string))
+WordPress.upload_sql(con_string)
+os.remove("{name}.sql".format(**con_string))
