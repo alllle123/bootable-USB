@@ -12,8 +12,8 @@ firewall-cmd --reload
 echo d
 echo 
 echo n
-echo p
-echo 3
+echo 
+echo 
 echo  
 echo  
 echo t
