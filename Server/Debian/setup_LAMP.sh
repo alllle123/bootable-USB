@@ -1,18 +1,16 @@
 #!/bin/bash
 
-apt-get update
-apt-get dist-upgrade -y
-
 apt-get install apache2 -y
+apt-get install mysql-server -y
 mysql_secure_installation
-apt-get install php5 php-pear php5-mysql
+apt-get install php5 php-pear php5-mysql -y
 
-apt-get install mcrypt
+apt-get install mcrypt -y
 
 /etc/init.d/apache2 stop
 /etc/init.d/apache2 start
 
-apt-get install phpmyadmin
+apt-get install phpmyadmin -y
 
 mkdir /var/www/public_html
 ln -s /usr/share/phpmyadmin /var/www/public_html/phpmyadmin
