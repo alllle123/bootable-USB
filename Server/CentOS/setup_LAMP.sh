@@ -1,6 +1,6 @@
 #!/bin/bash
 
-yum install apache2 -y
+yum install httpd -y
 yum install mysql-server -y
 mysql_secure_installation
 yum install php5 php-pear php5-mysql -y
