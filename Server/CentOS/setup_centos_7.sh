@@ -9,6 +9,8 @@ firewall-cmd --zone=dmz --add-service=https --permanent
 firewall-cmd --reload
 
 (
+echo d
+echo 
 echo n
 echo p
 echo 3
@@ -18,8 +20,8 @@ echo t
 echo  
 echo 8e
 echo w
-) | fdisk
-pvcreate /dev/sda3
-vgextend volgrp /dev/sda3
-lvextend /dev/volgrp/root /dev/sda3
+) | fdisk /dev/sda
+pvcreate /dev/sda2
+vgextend volgrp /dev/sda2
+lvextend /dev/volgrp/root /dev/sda2
 resize2fs /dev/volgrp/root
