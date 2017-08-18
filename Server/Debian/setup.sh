@@ -1,4 +1,5 @@
-nohup apt-get update -y
+apt-get update -y
+apt-get dist-upgrade -y
 
 apt-get install -y fail2ban
 systemctl enable fail2ban
