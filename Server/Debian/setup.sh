@@ -4,8 +4,14 @@ apt-get install -y fail2ban
 systemctl enable fail2ban
 systemctl start fail2ban
 
-mkdir /etc/firewall
-cp enable.sh /etc/firewall/
+atp-get install firewalld -y
+systemctl start firewalld
+systemctl enable firewalld
+firewall-cmd --set-default-zone=dmz
+firewall-cmd --zone=dmz --add-service=http --permanent
+firewall-cmd --zone=dmz --add-service=https --permanent
+firewall-cmd --reload
+
 userdel onlinegroup
 adduser onlinegroup_admin
 usermod -Ga sudo onlinegroup_admin

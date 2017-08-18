@@ -1,0 +1,8 @@
+
+<VirtualHost *:80>
+ServerAdmin <email>
+DocumentRoot /var/www/html/<website_tld>
+ServerName <website_tld>
+ErrorLog /var/log/httpd/wordpress-error-log
+CustomLog /var/log/httpd/wordpress-acces-log common
+</VirtualHost>
