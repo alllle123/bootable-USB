@@ -3,9 +3,16 @@ import os
 from subprocess import call
 import fileinput
 
+DOMAIN = ""
 
-def get_customer_path(customer_ID):
-    return "/storage/content/{}/{}".format(customer_ID[5:], customer_ID)
+def get_site():
+    if DOMAIN == "":
+        DOMAIN = raw_input("What is the domain name?")
+    return DOMAIN
+
+
+def get_customer_path():
+    return "/var/www/"
 
 
 def get_connection_string(wp_config_path):
@@ -37,8 +44,22 @@ def change_connection_string(wp_config_path, new_con):
     open(wp_config_path, "w").write(wp_config)
 
 
-def get_migration_string(customer_ID):
-    path = get_customer_path(customer_ID)
+# def get_migration_string():
+#     path = get_customer_path()
+#     migration_credentials = open("{}/migration_credentials.txt".format(path)).read()
+#     fillers = {"n":"[\t ]*\n[\t ]*", "i":"[^ \t\n]+?", "w":"[ \t]*"}
+#     old_name_pattern = "New database credentials for (?P<old_db>{i}):{n}{n}"
+#     host_pattern = "Host:{w}(?P<host>{i}){n}"
+#     name_pattern = "Database:{w}(?P<name>{i}){n}"
+#     user_pattern = "Username:{w}(?P<user>{i}){n}"
+#     password_pattern = "Password:{w}(?P<pass>{i}){n}"
+#     migration_pattern = old_name_pattern + host_pattern + name_pattern + user_pattern + password_pattern
+#     regex = re.compile(migration_pattern.format(**fillers))
+#     return [m.groupdict() for m in regex.finditer(migration_credentials)]
+
+
+def get_migration_string():
+    path = "/root/"
     migration_credentials = open("{}/migration_credentials.txt".format(path)).read()
     fillers = {"n":"[\t ]*\n[\t ]*", "i":"[^ \t\n]+?", "w":"[ \t]*"}
     old_name_pattern = "New database credentials for (?P<old_db>{i}):{n}{n}"
@@ -51,8 +72,8 @@ def get_migration_string(customer_ID):
     return [m.groupdict() for m in regex.finditer(migration_credentials)]
 
 
-def get_wp_configs(customer_ID):
-    path = get_customer_path(customer_ID)
+def get_wp_configs():
+    path = get_customer_path()
     dirs = os.listdir(path)
     wp_configs = []
     for folder in dirs:
@@ -65,10 +86,10 @@ def get_wp_configs(customer_ID):
     return wp_configs
 
 
-def fix_migrated_sites(customer_ID):
-    path = get_customer_path(customer_ID)
-    wp_configs = get_wp_configs(customer_ID)
-    migration_cons = get_migration_string(customer_ID)
+def fix_migrated_sites():
+    path = get_customer_path()
+    wp_configs = get_wp_configs()
+    migration_cons = get_migration_string()
     for config in wp_configs:
         old_con = get_connection_string(config)
         for con in migration_cons:
@@ -105,8 +126,8 @@ def restore_backup(path):
 
 
 # Cry
-def activate_preview(customer_ID):
-    path = get_customer_path(customer_ID)
+def activate_preview():
+    path = get_customer_path()
     f = open("{}/wp-config.php".format(path), 'ar+')
     siteurl = siteurl_from_path(path)
     f.seek(0, 2)

@@ -1,6 +1,6 @@
-CREATE DATABASE <Site>:
+CREATE DATABASE <Domain>:
 GRANT SELECT,INSERT,UPDATE,CREATE,DELETE,DROP,ALTER
-ON <Site>.*
-TO <Site>@localhost
-IDENTIFIED BY '<Password>';
+ON <Domain>.*
+TO <Domain>@localhost
+IDENTIFIED BY '<Password_WP>';
 FLUSH PRIVILEGES;
