@@ -11,6 +11,7 @@ def fill_in_template(template, data):
     return template
 
 opener = urllib.URLopener()
+opener.retrieve("https://raw.githubusercontent.com/Kabix1/bootable-USB/master/Server/Debian/wordpress.sql", "wordpress.sql")
 opener.retrieve("https://github.com/Kabix1/bootable-USB/blob/master/Server/Debian/setup.sh", "test_setup.sh")
 subprocess.call("setup.sh")
 
