@@ -12,7 +12,7 @@ def get_site():
 
 
 def get_customer_path():
-    return "/var/www/"
+    return "/var/www"
 
 
 def get_connection_string(wp_config_path):
@@ -31,7 +31,7 @@ def get_connection_string(wp_config_path):
 
 def change_connection_string(wp_config_path, new_con):
     wp_config = open(wp_config_path, "r").read()
-    backup(wp_config_path)
+    # backup(wp_config_path)
     fillers = {"n":"[\t ]*\n[\t ]*", "i":"[^ \t\n]+?", "w":"[ \t]*"}
     con_pattern = {}
     con_pattern["name"] = "{n}define\('DB_NAME', '({i})'\);"
@@ -97,6 +97,16 @@ def fix_migrated_sites():
                 raw_input("The connection string of {} will now be updated".format(config))
                 change_connection_string(config, con)
                 # print "The connection string of {} has been updated".format(path.basename(config))
+
+
+def get_old_databasenames():
+    wp_configs = get_wp_configs()
+    res = []
+    for config in wp_configs:
+        domain = re.match("/var/www/([^/]+)/.*", config).group(1)
+        con_str = get_connection_string(config)
+        res.append({"Domain":domain, "DB":con_str["name"]})
+    return res
 
 
 def download_sql(connection_string):

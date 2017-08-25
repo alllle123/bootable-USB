@@ -6,7 +6,7 @@
 apt-get install db-util 
 apt-get install -y vsftpd
 systemctl enable vsftpd.service
-mkdir -p /etc/vconf
+mkdir -p /etc/vsftpd/vconf
  
 #------------------------------------------------------------------------------------
 # Configure vsFTPd data directory and user

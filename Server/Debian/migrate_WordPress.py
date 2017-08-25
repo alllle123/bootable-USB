@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
-from subprocess import call
-from urllib
+import subprocess
+import urllib
 import argparse
 import re
 from tld import get_tld
@@ -11,7 +11,7 @@ def fill_in_template(template, data):
         template = template.replace("<{}>".format(key), str(value))
     return template
 
-def fill_file(data, filename):
+def fill_file(filename, data):
     content = open(filename, 'r').read()
     content = fill_in_template(data, content)
     open(filename, 'w').write(content)
@@ -30,9 +30,9 @@ get_github_file("WordPress.py")
 
 import WordPress
 
-subprocess.call("setup.sh")
+subprocess.call(["bash", "setup.sh"])
 
-input_format = ["Site", "ID", "IP_FTP", "Password_FTP", "Password_WP"]
+input_format = ["Site", "ID", "IP_FTP", "Password_FTP", "Password_WP", "Old_DB"]
 data = {}
 
 for info in input_format:
@@ -41,13 +41,17 @@ for info in input_format:
 domain = get_tld("http://{Site}".format(**data), as_object=True)
 data["Domain"] = domain.domain
 
-call("add_vhost.sh", data["Site"])
-call(["wget", "-nH", "-r", "-l", "0", "ftp://{FTP}/{Site}/public_html".format(**data),
-      "--user={ID}_staff".format(**data), "--password={Password}".format(**data),
+subprocess.call(["bash", "add_vhost.sh", data["Site"]])
+subprocess.call(["wget", "-nH", "-r", "-l", "0", "--cut-dirs=2", "ftp://{IP_FTP}/{Site}/public_html".format(**data),
+      "--user={ID}_staff".format(**data), "--password={Password_FTP}".format(**data),
       "-P", "/var/www/{Site}/public_html".format(**data)])
-
+subprocess.call(["wget", "-nH", "ftp://{IP_FTP}/".format(**data),
+      "--user={ID}_staff".format(**data), "--password={Password_FTP}/{Old_DB}".format(**data),
+      "-P", "/root/"])
 fill_file("wordpress.sql", data)
 fill_file("migration_credentials.txt", data)
-call(["mysql", "<", "wordpress.sql"])
+subprocess.call(["mysql", "<", "wordpress.sql"])
 WordPress.fix_migrated_sites()
 
+subprocess.call(["bash", "setup_ftp.sh"])
+subprocess.call(["bash", "create_ftp_user.sh", "{Domain}".format(**data)])
