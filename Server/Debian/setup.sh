@@ -26,3 +26,6 @@ cp sensbile.vim .vim/
 echo "source ~/.vim/sensible.vim" > .vimrc
 cp .vimrc /home/onlinegroup_admin/
 chown onlinegroup_admin:onlinegroup_admin /home/onlinegroup_admin/ -R
+
+wget https://raw.githubusercontent.com/Kabix1/bootable-USB/master/Server/All/remake_fdisk.sh
+wget https://raw.githubusercontent.com/Kabix1/bootable-USB/master/Server/All/resize_after_reboot.sh

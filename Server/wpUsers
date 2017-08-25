@@ -1,0 +1,79 @@
+#!/bin/bash
+
+if [ -a wp-config.php ]; then
+	DBNAME=$(grep DB_NAME wp-config.php | cut -d \' -f 4)
+  DBUSER=$(grep DB_USER wp-config.php | cut -d \' -f 4)
+  DBPASS=$(grep DB_PASSWORD wp-config.php | cut -d \' -f 4)
+  DBHOST=$(grep DB_HOST wp-config.php | cut -d \' -f 4)
+  DBPREFIX=$(grep table_prefix wp-config.php | cut -d \' -f 2)
+  DBTABLE=${DBPREFIX}"users"
+  DBMETA=${DBPREFIX}"usermeta"
+else
+  echo "No wp-config found in this folder!"
+  exit
+fi
+
+DATE=$(date +"%Y-%m-%d %T")
+PASS=$( date | md5sum | cut -c -8 )
+PASSMD5=$(echo -n "$PASS" | md5sum | cut -d ' ' -f 1)
+USERNAME="binerosupport"
+# echo $DATE
+
+while getopts ":hadl" opt; do
+  case $opt in
+		h)
+			echo ""
+			echo "WORDPRESS USER MANAGEMENT"
+			echo "Run this script while stading in the same folder as wp-config.php and use one of the options below"
+			echo "-h	Show this info"
+			echo "-a	Add user named $USERNAME"
+			echo "-d	Delete user named $USERNAME"
+			echo "-l	List users"
+			echo ""
+			exit 1
+			;;
+		a)
+			CHECK=$(mysql -h "$DBHOST" -u "$DBUSER" --password="$DBPASS" "$DBNAME" -N -e "SELECT COUNT(1) from ${DBTABLE} WHERE user_login='${USERNAME}';")
+      if [ ${CHECK} -eq 0 ]; then
+				mysql -h "$DBHOST" -u "$DBUSER" --password="$DBPASS" "$DBNAME" -e "INSERT INTO ${DBTABLE} (user_login,user_pass,user_email,user_registered,display_name,user_nicename) VALUES ('${USERNAME}','${PASSMD5}','support@binero.se','${DATE}','${USERNAME}','${USERNAME}');"
+        ID=$(mysql -h "$DBHOST" -u "$DBUSER" --password="$DBPASS" "$DBNAME" -N -e "SELECT ID from ${DBTABLE} WHERE user_login='${USERNAME}';")
+ 	      mysql -h "$DBHOST" -u "$DBUSER" --password="$DBPASS" "$DBNAME" -e "INSERT INTO ${DBMETA} (user_id,meta_key,meta_value) VALUES ('${ID}','${DBPREFIX}user_level','10');"
+				mysql -h "$DBHOST" -u "$DBUSER" --password="$DBPASS" "$DBNAME" -e "INSERT INTO ${DBMETA} (user_id,meta_key,meta_value) VALUES ('${ID}','${DBPREFIX}capabilities','a:1:{s:13:\"administrator\";b:1;}');"
+        echo "User added"
+        echo "Username: $USERNAME"
+ 	      echo "Password: $PASS"
+				exit 1
+      else
+				echo "User $USERNAME already exists"
+				exit 1
+			fi
+			;;
+		d)
+			CHECK=$(mysql -h "$DBHOST" -u "$DBUSER" --password="$DBPASS" "$DBNAME" -N -e "SELECT COUNT(1) from ${DBTABLE} WHERE user_login='${USERNAME}';")
+			if [ ${CHECK} -eq 0 ]; then
+				echo "No user named $USERNAME found"
+				exit
+			else
+				ID=$(mysql -h "$DBHOST" -u "$DBUSER" --password="$DBPASS" "$DBNAME" -N -e "SELECT ID from ${DBTABLE} WHERE user_login='${USERNAME}';")
+				mysql -h "$DBHOST" -u "$DBUSER" --password="$DBPASS" "$DBNAME" -e "DELETE from ${DBMETA} WHERE user_id='${ID}';"
+				mysql -h "$DBHOST" -u "$DBUSER" --password="$DBPASS" "$DBNAME" -e "DELETE from ${DBTABLE} WHERE ID='${ID}';"
+				echo "User $USERNAME deleted"
+			fi
+			exit 1
+			;;
+		l)
+			mysql -h "$DBHOST" -u "$DBUSER" --password="$DBPASS" "$DBNAME" -e "SELECT ID, user_login, user_pass, user_nicename, user_email, user_url, user_registered, display_name FROM ${DBTABLE};"
+			exit 1
+			;;
+		\?)
+      echo "Invalid option: -$OPTARG"
+      echo "Use -h for help"
+			exit 1
+      ;;
+	esac
+done
+if [ -z "$OPTARG" ]; then
+	echo "Use -h for help"
+	exit 1
+fi
+
