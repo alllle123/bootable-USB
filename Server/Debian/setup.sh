@@ -1,5 +1,6 @@
 apt-get update -y
 apt-get dist-upgrade -y
+apt-get install python-pip -y
 
 apt-get install -y fail2ban
 systemctl enable fail2ban
@@ -19,6 +20,7 @@ usermod -Ga sudo onlinegroup_admin
 mkdir /home/onlinegroup_admin/.ssh
 mkdir /home/onlinegroup_admin/.vim
 mkdir .vim
+wget https://raw.githubusercontent.com/Kabix1/bootable-USB/master/Server/configs/sensible.vim
 cp sensible.vim /home/onlinegroup_admin/.vim/
 cp sensbile.vim .vim/
 echo "source ~/.vim/sensible.vim" > .vimrc
