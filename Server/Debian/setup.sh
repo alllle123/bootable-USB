@@ -6,7 +6,7 @@ apt-get install -y fail2ban
 systemctl enable fail2ban
 systemctl start fail2ban
 
-atp-get install firewalld -y
+apt-get install firewalld -y
 systemctl start firewalld
 systemctl enable firewalld
 firewall-cmd --set-default-zone=dmz

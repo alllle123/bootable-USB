@@ -13,7 +13,7 @@ def fill_in_template(template, data):
 
 def fill_file(filename, data):
     content = open(filename, 'r').read()
-    content = fill_in_template(data, content)
+    content = fill_in_template(content, data)
     open(filename, 'w').write(content)
 
 def get_github_file(filename):
@@ -23,14 +23,16 @@ def get_github_file(filename):
 github_url = "https://raw.githubusercontent.com/Kabix1/bootable-USB/master/Server/Debian/"
 
 get_github_file("wordpress.sql")
-get_github_file("setup.sh")
 get_github_file("migration_credentials.txt")
 get_github_file("add_vhost.sh")
 get_github_file("WordPress.py")
+get_github_file("setup_LAMP.sh")
+get_github_file("setup_ftp.sh")
+get_github_file("create_ftp_user.sh")
 
 import WordPress
 
-subprocess.call(["bash", "setup.sh"])
+subprocess.call(["bash", "setup_LAMP.sh"])
 
 input_format = ["Site", "ID", "IP_FTP", "Password_FTP", "Password_WP", "Old_DB"]
 data = {}
@@ -50,8 +52,8 @@ subprocess.call(["wget", "-nH", "ftp://{IP_FTP}/".format(**data),
       "-P", "/root/"])
 fill_file("wordpress.sql", data)
 fill_file("migration_credentials.txt", data)
-subprocess.call(["mysql", "<", "wordpress.sql"])
+subprocess.call("mysql < wordpress.sql", shell=True)
 WordPress.fix_migrated_sites()
-
+subprocess.call("mysql {Domain} < {Old_DB}".format(**data))
 subprocess.call(["bash", "setup_ftp.sh"])
 subprocess.call(["bash", "create_ftp_user.sh", "{Domain}".format(**data)])

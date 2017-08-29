@@ -2,3 +2,7 @@
 *.ISO
 passwords
 marsta.nu
+*.key*
+*.cer*
+*.crt*
+SSL/*

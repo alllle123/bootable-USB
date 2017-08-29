@@ -3,7 +3,7 @@
 #------------------------------------------------------------------------------------
 # Install vsFTPd
 #------------------------------------------------------------------------------------
-apt-get install db-util 
+apt-get install -y db-util 
 apt-get install -y vsftpd
 systemctl enable vsftpd.service
 mkdir -p /etc/vsftpd/vconf
@@ -61,4 +61,3 @@ firewall-cmd --reload
 # Configure selinux
 #------------------------------------------------------------------------------------
  
-setsebool -P ftpd_full_access 1
