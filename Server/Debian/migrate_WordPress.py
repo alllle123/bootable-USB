@@ -47,13 +47,13 @@ subprocess.call(["bash", "add_vhost.sh", data["Site"]])
 subprocess.call(["wget", "-nH", "-r", "-l", "0", "--cut-dirs=2", "ftp://{IP_FTP}/{Site}/public_html".format(**data),
       "--user={ID}_staff".format(**data), "--password={Password_FTP}".format(**data),
       "-P", "/var/www/{Site}/public_html".format(**data)])
-subprocess.call(["wget", "-nH", "ftp://{IP_FTP}/".format(**data),
-      "--user={ID}_staff".format(**data), "--password={Password_FTP}/{Old_DB}".format(**data),
+subprocess.call(["wget", "-nH", "ftp://{IP_FTP}/{Old_DB}.sql".format(**data),
+      "--user={ID}_staff".format(**data), "--password={Password_FTP}".format(**data),
       "-P", "/root/"])
 fill_file("wordpress.sql", data)
 fill_file("migration_credentials.txt", data)
 subprocess.call("mysql < wordpress.sql", shell=True)
 WordPress.fix_migrated_sites()
-subprocess.call("mysql {Domain} < {Old_DB}".format(**data))
+subprocess.call("mysql {Domain} < {Old_DB}".format(**data), shell=True)
 subprocess.call(["bash", "setup_ftp.sh"])
 subprocess.call(["bash", "create_ftp_user.sh", "{Domain}".format(**data)])
