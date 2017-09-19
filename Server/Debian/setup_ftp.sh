@@ -35,7 +35,7 @@ guest_username=www-data
 local_root=/var/www/public_html
 user_sub_token=$USER
 virtual_use_local_privs=YES
-user_config_dir=/etc/vconf' >> /etc/vsftpd.conf
+user_config_dir=/etc/vsftpd/vconf' >> /etc/vsftpd.conf
  
 systemctl start vsftpd.service
  
