@@ -11,8 +11,8 @@ echo "
         ServerName $site
         ServerAlias www.$site
         DocumentRoot /var/www/$site/public_html
-        ErrorLog ${APACHE_LOG_DIR}/error.log
-        CustomLog ${APACHE_LOG_DIR}/access.log combined
+        ErrorLog /var/log/apache2/error.log
+        CustomLog /var/log/apache2/access.log combined
 </VirtualHost>
 " > /etc/apache2/sites-available/$site.conf
 
