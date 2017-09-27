@@ -1,9 +1,10 @@
 #!/bin/bash
 
-apt-get install apache2 -y
-apt-get install mysql-server -y
+apt-get install mariadb-client mariadb-server -y
 mysql_secure_installation
-apt-get install php5 php-pear php5-mysql -y
+apt-get install php7.0 php7.0-mysql -y
+apt-get install apache2 apache2-mod-php7.0
+
 
 apt-get install mcrypt -y
 
@@ -12,9 +13,6 @@ apt-get install mcrypt -y
 
 apt-get install phpmyadmin -y
 
-mkdir /var/www/public_html
-ln -s /usr/share/phpmyadmin /var/www/public_html/phpmyadmin
-chown www-data:www-data /var/www -R
 
 perl -pi -e 'BEGIN{$/=undef} s/(www>.*\n.*\n.*AllowOverride )None/$1All/g' /etc/apache2/apache2.conf
 a2enmod rewrite

@@ -29,6 +29,7 @@ get_github_file("WordPress.py")
 get_github_file("setup_LAMP.sh")
 get_github_file("setup_ftp.sh")
 get_github_file("create_ftp_user.sh")
+get_github_file("install_postfix.sh")
 
 import WordPress
 
@@ -50,6 +51,11 @@ subprocess.call(["wget", "-nH", "-r", "-l", "0", "--cut-dirs=2", "ftp://{IP_FTP}
 subprocess.call(["wget", "-nH", "ftp://{IP_FTP}/{Old_DB}.sql".format(**data),
       "--user={ID}_staff".format(**data), "--password={Password_FTP}".format(**data),
       "-P", "/root/"])
+
+subprocess.call(["find", "/var/www/{Site}/public_html".format(**data), "-name", "-exec",
+                "sed", "-i", """s-/storage/content/[0-9][0-9]/[0-9]\{6,7\}-
+/var/www-g""", "{}", "\\;"])
+
 fill_file("wordpress.sql", data)
 fill_file("migration_credentials.txt", data)
 subprocess.call("mysql < wordpress.sql", shell=True)
@@ -57,3 +63,4 @@ WordPress.fix_migrated_sites()
 subprocess.call("mysql {Domain} < {Old_DB}.sql".format(**data), shell=True)
 subprocess.call(["bash", "setup_ftp.sh"])
 subprocess.call(["bash", "create_ftp_user.sh", "{Domain}".format(**data)])
+subprocess.call(["bash", "install_postfix.sh"])
