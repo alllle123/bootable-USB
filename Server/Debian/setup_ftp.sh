@@ -12,7 +12,7 @@ mkdir -p /etc/vsftpd/vconf
 # Configure vsFTPd data directory and user
 #------------------------------------------------------------------------------------
  
-# useradd -s /sbin/nologin vsftpd
+useradd -s /sbin/nologin vsftpd
  
 #------------------------------------------------------------------------------------
 # Configure vsFTPd (/etc/vsftpd.conf)
@@ -28,10 +28,10 @@ sed -i "/#chroot_list_enable=YES/i\chroot_local_user=YES" /etc/vsftpd.conf
 sed -i 's/listen=NO/listen=YES/' /etc/vsftpd.conf
 sed -i 's/listen_ipv6=YES/listen_ipv6=NO/' /etc/vsftpd.conf
  
-# guest_username=vsftpd
+# guest_username=www-data
+guest_username=vsftpd
 echo 'allow_writeable_chroot=YES
 guest_enable=YES
-guest_username=www-data
 local_root=/var/www/public_html
 user_sub_token=$USER
 virtual_use_local_privs=YES
